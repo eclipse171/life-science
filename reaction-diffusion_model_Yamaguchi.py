@@ -2,7 +2,7 @@ import numpy as np
 import random
 import math
 import matplotlib.pyplot as plt
-from matplotlib import animation, rc, cm
+from matplotlib import animation, rc
 import os
 
 def prep_laplacian_op(n,m):
@@ -18,8 +18,6 @@ def laplacian(a, op):
     a2 = np.fft.fft2(a)
     a2 = op * a2
     return np.fft.ifft2(a2).real
-
-###
 
 N = 100
 

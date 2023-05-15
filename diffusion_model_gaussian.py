@@ -2,7 +2,7 @@ import numpy as np
 import random
 import math
 import matplotlib.pyplot as plt
-from matplotlib import animation, rc, cm
+from matplotlib import animation, rc
 import os
 
 def prep_laplacian_op(n,m):
@@ -19,8 +19,6 @@ def laplacian(a, op):
     a2 = op * a2
     return np.fft.ifft2(a2).real
 
-###
-
 N = 100
 
 D_u = 10.0
@@ -30,7 +28,7 @@ op = prep_laplacian_op(N,N)
 def gaussian_func(x,y,sigma):
     return math.exp(-(x*x+y*y)/(2*sigma*sigma))/(2*math.pi*sigma*sigma)
 
-u = np.random.uniform(low=0.0, high=1.0, size=(N,N))
+u = np.empty((N,N))
 
 for i in range(0,N):
     for j in range(0,N):
@@ -40,7 +38,7 @@ t = 0
 dt = 0.005
 
 def nextstep():
-    global u,v,t
+    global u,t
     for cnt in range(100):
         dudt = D_u * laplacian(u,op)
         u = u + dudt*dt
