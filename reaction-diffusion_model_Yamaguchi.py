@@ -3,6 +3,7 @@ import random
 import math
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc, cm
+import os
 
 def prep_laplacian_op(n,m):
     A = np.zeros((n,m))
@@ -22,12 +23,12 @@ def laplacian(a, op):
 
 N = 100
 
-p_a = 0.01
-p_b = 0.2
+p_a = 0.0
+p_b = 1.2
 p_c = 0.4
 
 D_u = 0.2
-D_v = 0.1
+D_v = 4.0
 
 op = prep_laplacian_op(N,N)
 
@@ -39,25 +40,24 @@ dt = 0.005
 def nextstep():
     global u,v,t
     for cnt in range(100):
-        # dudt = D_u * laplacian(u,op) + p_a - p_b*u + u*u/(v*(1.0+p_c*u*u))
-        # dvdt = D_v * laplacian(v,op) + u*u - v
-        dudt = D_u * laplacian(u,op) - u*v*v + p_a*(1.0-u)
-        dvdt = D_v * laplacian(v,op) + u*v*v - (p_a+p_b)*v
+        dudt = D_u * laplacian(u,op) + p_a - p_b*u + u*u/(v*(1.0+p_c*u*u))
+        dvdt = D_v * laplacian(v,op) + u*u - v
         u = u + dudt*dt
         v = v + dvdt*dt
         t = t + dt
 
+if not os.path.exists('Yamaguchi_images'):
+    os.mkdir('Yamaguchi_images')
+
 fig = plt.figure()
 images = []
+cnt = 0
 while t<10.0:
     img = plt.imshow(u,cmap="binary")
     images.append([img])
-    nextstep()
-
-cnt = 0
-for i in images:
-    plt.savefig("{0:03d}.png".format(cnt))
+    plt.savefig("Yamaguchi_images/{0:03d}.png".format(cnt))
     cnt += 1
+    nextstep()
 
 anim = animation.ArtistAnimation(fig, images, interval=200)
 rc('animation', html='jshtml')

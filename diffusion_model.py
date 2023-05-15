@@ -3,6 +3,7 @@ import random
 import math
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc, cm
+import os
 
 def prep_laplacian_op(n,m):
     A = np.zeros((n,m))
@@ -12,7 +13,7 @@ def prep_laplacian_op(n,m):
             eta = 2*math.pi*q/m if q<=m//2 else 2*math.pi*(q-m)/m
             A[p,q] = -xi*xi-eta*eta
     return A
-            
+  
 def laplacian(a, op):
     a2 = np.fft.fft2(a)
     a2 = op * a2
@@ -45,17 +46,18 @@ def nextstep():
         u = u + dudt*dt
         t = t + dt
 
+if not os.path.exists('Gaussian_images'):
+    os.mkdir('Gaussian_images')
+
 fig = plt.figure()
 images = []
+cnt = 0
 while t<10.0:
     img = plt.imshow(u,cmap="binary")
     images.append([img])
-    nextstep()
-
-cnt = 0
-for i in images:
-    plt.savefig("{0:03d}.png".format(cnt))
+    plt.savefig("Gaussian_images/{0:03d}.png".format(cnt))
     cnt += 1
+    nextstep()
 
 anim = animation.ArtistAnimation(fig, images, interval=200)
 rc('animation', html='jshtml')
